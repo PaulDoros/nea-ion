@@ -2,52 +2,59 @@
 <html lang="ro">
 <head>
 <meta charset="UTF-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nea Ion cel mai TOP — Pixel Galaxy</title>
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover"/>
+<title>Ion cel mai TOP — Pixel Galaxy</title>
 <style>
   :root{
     --c1:#00ffff; --c2:#ff66cc; --c3:#ffcc00; --c4:#00ff66;
-    --panel:#13141a; --panel-border:#2ee7ff; --panel-outline:#8b5cf6; --text:#f8f8ff;
+    --panel:#13141a; --panel-border:#2ee7ff; --text:#f8f8ff;
     --ok:#00ffa6; --warn:#ffcc00; --bad:#ff4d6d;
+    --px: 0px; --py: 0px; --tilt: 0deg;
   }
 
-  /* Bază — fundal cosmic (fără negru plictisitor) */
   html,body{
-    margin:0; padding:0; overflow:hidden;
-    height:100vh; width:100vw;
-    background: radial-gradient(circle at 30% 20%, #0b1c3d 0%, #090f2c 40%, #050509 100%);
-    font-family:'Courier New', monospace; color:var(--text);
+    margin:0; padding:0; height:100vh; width:100vw; overflow:hidden;
+    background:
+      radial-gradient(circle at 30% 20%, #0b1c3d 0%, #090f2c 42%, #060713 72%, #04040a 100%),
+      #04040a;
+    font-family: system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", "Courier New", monospace;
+    color:var(--text);
+    -webkit-tap-highlight-color: transparent;
   }
 
-  /* Straturi atmosferice animate */
-  .bg-gradient{
-    position:fixed; inset:0; z-index:-4;
+  /* Layers */
+  .bg-gradient{ position:fixed; inset:0; z-index:-6;
     background:
-      radial-gradient(1200px 800px at 10% 110%, rgba(0,255,255,.12), transparent 60%),
-      radial-gradient(900px 600px at 90% -10%, rgba(255,102,204,.10), transparent 55%),
-      radial-gradient(700px 500px at 50% 50%, rgba(255,204,0,.08), transparent 60%),
+      radial-gradient(1200px 800px at 10% 110%, rgba(0,255,255,.10), transparent 60%),
+      radial-gradient(900px 600px at 90% -10%, rgba(255,102,204,.08), transparent 55%),
+      radial-gradient(700px 500px at 50% 50%, rgba(255,204,0,.06), transparent 60%),
       linear-gradient(120deg, #050509, #0a0b12 60%, #050509);
-    animation:hue 30s linear infinite;
-  }
-  @keyframes hue{from{filter:hue-rotate(0)} to{filter:hue-rotate(360deg)}}
+    animation:hue 50s linear infinite; will-change:filter; }
+  @keyframes hue{from{filter:hue-rotate(0deg)}to{filter:hue-rotate(360deg)}}
 
-  /* Nebuloasă fină */
-  .nebula{
-    position:fixed; inset:0; z-index:-3; pointer-events:none; mix-blend-mode:screen;
+  .nebula{ position:fixed; inset:0; z-index:-5; pointer-events:none; mix-blend-mode:screen;
+    transform: translate(var(--px), var(--py)) rotate(var(--tilt)); transition: transform .12s ease-out;
     background:
-      radial-gradient(800px 600px at 20% 40%, rgba(138,43,226,.08), transparent 60%),
-      radial-gradient(700px 500px at 70% 60%, rgba(255,105,180,.06), transparent 70%),
-      radial-gradient(1000px 800px at 50% 120%, rgba(0,191,255,.05), transparent 75%);
-    animation:nebulaDrift 80s linear infinite;
+      radial-gradient(900px 700px at 20% 40%, rgba(124,58,237,.10), transparent 60%),
+      radial-gradient(1100px 800px at 80% 55%, rgba(14,165,233,.08), transparent 65%),
+      radial-gradient(1400px 900px at 50% 120%, rgba(255,105,180,.06), transparent 70%);
+    filter: saturate(120%) blur(.2px); animation:nebulaDrift 90s ease-in-out infinite;
   }
   @keyframes nebulaDrift{
-    from{transform:translate(0,0) scale(1)}
-    50%{transform:translate(-40px,20px) scale(1.05)}
-    to{transform:translate(0,0) scale(1)}
+    0%{ transform: translate(var(--px), var(--py)) rotate(0) }
+    50%{ transform: translate(calc(var(--px)*1.4), calc(var(--py)*1.4)) rotate(1deg) }
+    100%{ transform: translate(var(--px), var(--py)) rotate(0) }
   }
 
-  /* Sfere neon */
-  .orbs{ position:fixed; inset:0; z-index:-2; pointer-events:none; filter:blur(20px) saturate(120%); }
+  .aurora{ position:fixed; inset:-10% -10%; z-index:-4; pointer-events:none;
+    background:
+      conic-gradient(from 0deg at 20% 20%, rgba(0,255,153,.07), transparent 35%),
+      conic-gradient(from 180deg at 80% 60%, rgba(0,204,255,.06), transparent 40%),
+      conic-gradient(from 300deg at 50% 100%, rgba(255,102,204,.05), transparent 30%);
+    filter: blur(18px) saturate(120%); animation: auroraFlow 30s linear infinite; mix-blend-mode: screen; }
+  @keyframes auroraFlow{from{transform:rotate(0) scale(1)}50%{transform:rotate(3deg) scale(1.03)}to{transform:rotate(0) scale(1)}}
+
+  .orbs{ position:fixed; inset:0; z-index:-3; pointer-events:none; filter: blur(20px) saturate(120%); }
   .orb{ position:absolute; width:240px; height:240px; border-radius:50%;
     background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(255,255,255,0) 60%),
                 radial-gradient(circle at 70% 70%, currentColor, rgba(0,0,0,0) 70%);
@@ -59,112 +66,114 @@
                    50%{transform:translate(120px,-80px) rotate(180deg) scale(1.15)}
                    100%{transform:translate(0,0) rotate(360deg) scale(1)}}
 
-  /* Stele */
-  .stars,.stars2{ position:fixed; inset:0; z-index:-1; overflow:hidden; pointer-events:none; }
-  .stars span,.stars2 span{
-    position:absolute; pointer-events:auto; border-radius:50%; opacity:.85;
-    filter:drop-shadow(0 0 6px currentColor);
-    animation: floatY var(--fy) linear infinite, twinkle var(--tw) ease-in-out infinite;
-  }
-  @keyframes floatY{from{transform:translateY(10vh)} to{transform:translateY(-190vh)}}
-  @keyframes twinkle{0%,100%{opacity:.25; transform:scale(.7)} 50%{opacity:1; transform:scale(1.2)}}
+  .stars,.stars2{ position:fixed; inset:0; z-index:-2; overflow:hidden; pointer-events:none; }
+  .stars span,.stars2 span{ position:absolute; border-radius:50%; opacity:.9;
+    filter: drop-shadow(0 0 6px currentColor);
+    animation: floatY var(--fy) linear infinite, twinkle var(--tw) ease-in-out infinite; }
+  @keyframes floatY{ from{ transform: translateY(10vh)} to{ transform: translateY(-190vh)} }
+  @keyframes twinkle{ 0%,100%{ opacity:.25; transform: scale(.7)} 50%{opacity:1; transform: scale(1.2)} }
 
-  /* Scanlines + vignette */
+  .noise{ position:fixed; inset:-2% -2%; z-index:-1; pointer-events:none; opacity:.08; mix-blend-mode: soft-light;
+    background:
+      repeating-radial-gradient(circle at 10% 20%, rgba(255,255,255,.03) 0 1px, transparent 1px 3px),
+      repeating-linear-gradient(0deg, rgba(0,0,0,.06) 0 2px, transparent 2px 4px),
+      repeating-linear-gradient(90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 3px);
+    animation: noisePulse 6s ease-in-out infinite; }
+  @keyframes noisePulse{0%,100%{opacity:.06}50%{opacity:.10}}
+
   .scanlines{ position:fixed; inset:0; z-index:10; pointer-events:none;
     background:
       radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,.45) 100%),
       repeating-linear-gradient(to bottom, rgba(255,255,255,.04) 0 2px, transparent 2px 4px);
-    mix-blend-mode:screen; }
+    mix-blend-mode: screen; }
 
-  /* Titlul neon (ricoșeu) */
+  /* Bouncing title (screensaver) */
   .center-text{
-    position:absolute; left:100px; top:100px; z-index:3;
-    font-weight:900; font-size:clamp(2rem,6vw,4.2rem); line-height:1;
+    position:absolute; left:16px; top:16px; z-index:3;
+    font-weight:900; line-height:1.05;
+    font-size: clamp(1.8rem, 8vw, 4rem);
+    letter-spacing:.5px;
+    /* Make ONLY text gradient-free if needed: comment next 3 lines to remove gradient entirely */
     background:linear-gradient(270deg,var(--c2),var(--c1),var(--c3),var(--c4),var(--c2));
     background-size:600% 600%;
     -webkit-background-clip:text; background-clip:text; -webkit-text-fill-color:transparent;
-    text-shadow:0 0 12px rgba(255,255,255,.25), 0 0 40px rgba(0,255,255,.12);
-    animation:gradientFlow 10s ease infinite, pulse 2.2s ease-in-out infinite;
-    cursor:pointer; user-select:none;
+    text-shadow:0 0 10px rgba(255,255,255,.18);
+    animation:gradientFlow 12s ease infinite;
+    user-select:none; -webkit-user-select:none; touch-action:manipulation;
   }
   @keyframes gradientFlow{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
-  @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08) rotate(1.2deg)}}
 
-  /* Panouri & butoane */
+  /* Panels & controls */
   .panel{
     background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
-    backdrop-filter: blur(6px);
-    border:4px solid var(--panel-border);
-    box-shadow:0 0 0 8px rgba(139,92,246,.25), inset 0 0 0 2px rgba(255,255,255,.06),
-               0 18px 40px rgba(0,0,0,.6), 0 0 24px rgba(46,231,255,.25);
+    backdrop-filter: blur(8px);
+    border:3px solid var(--panel-border);
+    box-shadow:0 0 0 6px rgba(139,92,246,.22), inset 0 0 0 2px rgba(255,255,255,.06),
+               0 14px 34px rgba(0,0,0,.55), 0 0 18px rgba(46,231,255,.22);
     border-radius:14px;
   }
   .pixel-border{ position:relative; }
   .pixel-border:before{ content:""; position:absolute; inset:-6px; border:2px solid rgba(255,255,255,.15);
-    filter:drop-shadow(0 0 6px rgba(46,231,255,.4)); border-radius:6px; pointer-events:none; }
+    filter:drop-shadow(0 0 6px rgba(46,231,255,.4)); border-radius:8px; pointer-events:none; }
+
   .btn{
-    background:linear-gradient(45deg,var(--c2),var(--c3)); color:#0b0b13; font-weight:700; border:none;
-    padding:10px 16px; border-radius:10px; cursor:pointer;
+    background:linear-gradient(45deg,#ff66cc,#ffcc00); color:#0b0b13; font-weight:800; border:none;
+    padding:12px 16px; border-radius:12px; cursor:pointer;
     box-shadow:0 4px 0 #000, 0 0 12px rgba(255,102,204,.6);
     transition:transform .08s ease, filter .2s ease;
+    font-size:16px;
   }
-  .btn:active{ transform:translateY(2px); box-shadow:0 2px 0 #000, 0 0 6px rgba(255,102,204,.6) }
+  .btn:active{ transform:translateY(2px) }
 
-  /* Bare & toast */
-  .meter{height:12px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); border-radius:999px; overflow:hidden;}
-  .meter > span{display:block; height:100%; width:0%;
-    background:linear-gradient(90deg,var(--ok),var(--warn),var(--bad));
-    transition:width .35s ease;}
-  .toast{
-    position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:9;
-    padding:10px 14px; border-radius:10px; color:#0b0b13; background:#fefefe;
-    border:2px solid var(--panel-border); box-shadow:0 10px 30px rgba(0,0,0,.45);
-    font-weight:800; display:none; max-width:min(92vw,680px); text-align:center;
-  }
+  .modal{ position:fixed; inset:0; display:none; z-index:6; justify-content:center; align-items:center; background:rgba(0,0,0,.6); padding:env(safe-area-inset-top) 12px env(safe-area-inset-bottom); }
+  .modal .content{ width:min(760px,92vw); padding:18px; text-align:center; }
 
-  /* Modale */
-  .modal{ position:fixed; inset:0; display:none; z-index:6; justify-content:center; align-items:center; background:rgba(0,0,0,.65); }
-  .modal .content{ width:min(760px,92vw); padding:22px; text-align:center; }
-
-  /* HUD */
-  .hud{ position:fixed; top:12px; left:12px; z-index:5; padding:10px 14px; font-weight:800; letter-spacing:1px; }
+  .hud{ position:fixed; top:10px; left:10px; z-index:5; padding:10px 12px; font-weight:800; letter-spacing:.5px; }
   .hud small{opacity:.8}
 
-  /* Joc */
-  .game{ position:fixed; inset:0; display:none; z-index:7; justify-content:center; align-items:center; gap:16px; background:rgba(0,0,0,.6); }
-  .stage{ position:relative; width:min(900px, 92vw); height:min(60vh, 520px); overflow:hidden; padding:16px; }
+  .game{ position:fixed; inset:0; display:none; z-index:7; justify-content:center; align-items:center; gap:12px; background:rgba(0,0,0,.55); padding:24px; }
+  .stage{ position:relative; width:min(900px, 92vw); height:min(60vh, 520px); max-height:70vh; overflow:hidden; padding:12px; }
 
-  /* Actori */
-  #gameCat,#gameDog{
-    position:absolute; text-align:center; user-select:none; cursor:pointer; transform:translate(-50%,-50%);
-    filter:drop-shadow(0 4px 10px rgba(0,0,0,.6)) drop-shadow(0 0 16px rgba(255,255,255,.3));
-  }
-  #gameCat{ --size:96px; width:var(--size); height:var(--size); line-height:var(--size); font-size:calc(var(--size)*.66); }
-  #gameDog{ width:84px; height:84px; line-height:84px; font-size:56px; opacity:.95; }
+  #gameCat,#gameDog{ position:absolute; text-align:center; user-select:none; cursor:pointer; transform:translate(-50%,-50%);
+    filter:drop-shadow(0 4px 10px rgba(0,0,0,.6)) drop-shadow(0 0 16px rgba(255,255,255,.3)); }
+  #gameCat{ --size:84px; width:var(--size); height:var(--size); line-height:var(--size); font-size:calc(var(--size)*.66); }
+  #gameDog{ width:72px; height:72px; line-height:72px; font-size:52px; opacity:.95; }
 
-  /* FX */
-  .flash{ animation: flash .18s ease; }
-  @keyframes flash{ from{filter:brightness(1.4)} to{filter:brightness(1)} }
+  .meter{height:12px; background:rgba(255,255,255,.12); border:1px solid rgba(255,255,255,.25); border-radius:999px; overflow:hidden;}
+  .meter>span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--ok),var(--warn),var(--bad)); transition:width .3s ease;}
+
+  .toast{ position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:9;
+    padding:10px 14px; border-radius:12px; color:#0b0b13; background:#fefefe;
+    border:2px solid var(--panel-border); box-shadow:0 10px 30px rgba(0,0,0,.45);
+    font-weight:800; display:none; max-width:min(92vw,680px); text-align:center; }
+
   .ripple{ position:fixed; width:12px; height:12px; border-radius:50%; border:2px solid rgba(255,255,255,.45);
            pointer-events:none; z-index:2; transform:translate(-50%,-50%); animation:ripple .6s ease-out forwards; }
   @keyframes ripple{ from{opacity:.8; transform:translate(-50%,-50%) scale(.4)} to{opacity:0; transform:translate(-50%,-50%) scale(8)} }
   .spark{ position:fixed; width:8px; height:8px; border-radius:2px; pointer-events:none; background:currentColor; z-index:4; animation:pop .65s ease-out forwards; }
   @keyframes pop{0%{opacity:1; transform:translate(0,0) scale(1)}100%{opacity:0; transform:translate(var(--dx),var(--dy)) scale(.2)}}
+
+  /* Mobile tweaks */
+  @media (max-width: 480px){
+    .btn{ padding:14px 16px; font-size:17px; }
+    .hud{ font-size:14px; }
+    #gameCat{ --size:72px; }
+  }
 </style>
 </head>
 <body>
 
-  <!-- Fundal -->
+  <!-- BACKGROUND LAYERS -->
   <div class="bg-gradient"></div>
   <div class="nebula"></div>
+  <div class="aurora"></div>
   <div class="orbs"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
-
-  <!-- Stele -->
   <div class="stars" id="stars"></div>
   <div class="stars2" id="stars2"></div>
+  <div class="noise"></div>
 
-  <!-- Titlu -->
-  <div class="center-text" id="title" title="Deschide meniul">🎉 Nea Ion cel mai TOP 🎉</div>
+  <!-- TITLE (screensaver bounce). NOTE: no emoji, only text as requested -->
+  <div class="center-text" id="title" tabindex="0" aria-label="Deschide meniul principal">Ion cel mai TOP</div>
 
   <!-- HUD -->
   <div class="hud panel pixel-border" id="hud" style="display:none;">
@@ -174,40 +183,57 @@
     <div><small>⏳ Timp:</small> <span id="timeLabel">30.0s</span></div>
   </div>
 
-  <!-- Modal principal -->
+  <!-- MAIN MODAL -->
   <div class="modal" id="modal1" role="dialog" aria-modal="true">
     <div class="content panel pixel-border">
-      <h2 style="margin:8px 0 6px">Ia uite-l pe Nea Ion 🕺</h2>
-      <p style="margin:0 0 14px; opacity:.85">Mod petrecere galactică. Alege distracția și fă-l pe Ion să râdă!</p>
+      <h2 style="margin:8px 0 6px">Ion cel mai TOP</h2>
+      <p style="margin:0 0 14px; opacity:.85">Mod petrecere galactică. Alege distracția și fă-l pe Ion să zâmbească.</p>
 
-      <!-- Ion GIF + slogan -->
       <div style="margin:10px auto 18px; display:flex; flex-direction:column; align-items:center; gap:10px;">
-        <div style="font-size:1.2rem; font-weight:900; letter-spacing:.5px;">Eu sunt Ion, cel mai tare dansator</div>
+        <div style="font-size:1.1rem; font-weight:900; letter-spacing:.4px;">Eu sunt Ion, cel mai tare dansator</div>
         <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnRzM25yZjl6cWVzOTRqNmd5aWJzcjVweGR0N3Nwem1jendzaGI1dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/BK1EfIsdkKZMY/giphy.gif"
-             alt="Ion dansează" style="max-width:100%; width:360px; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.5); outline:3px solid var(--panel-border);"/>
+             alt="Ion dansează" style="max-width:100%; width:340px; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.5); outline:3px solid var(--panel-border);"/>
       </div>
 
-      <!-- Ion-o-metru -->
-      <div style="margin:8px 0 4px; font-weight:800;">📈 Ion-o-metru (nivel de bună dispoziție)</div>
+      <!-- Meter -->
+      <div style="margin:8px 0 6px; font-weight:800;">📈 Ion-o-metru</div>
       <div class="meter"><span id="meterFill"></span></div>
 
-      <!-- Butoane fun -->
-      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:14px;">
-        <button class="btn" onclick="openGame()">Joacă ‘Prinde Pisica’ 🐱</button>
-        <button class="btn" onclick="shuffleTheme()">Schimbă culorile 🎨</button>
-        <button class="btn" onclick="spuneGluma()">Spune o glumă cu Ion 😂</button>
-        <button class="btn" onclick="spuneCompliment()">Compliment pentru Ion 💖</button>
-        <button class="btn" onclick="miniEaster()">Buton de panică 🆘</button>
-        <button class="btn" onclick="closeModal('modal1')">Închide ✖</button>
+      <!-- Jokes (static + random) -->
+      <div class="panel pixel-border" style="margin:14px auto 8px; padding:12px; max-width:640px;">
+        <div style="font-weight:800; margin-bottom:6px;">Glumă de încălzire</div>
+        <div id="glumaText" style="opacity:.95;">Se spune că stelele clipesc când dansează Ion. Confirmăm. 🌟</div>
+        <div style="margin-top:10px; display:flex; gap:10px; justify-content:center;">
+          <button class="btn" onclick="schimbaGluma()">Altă glumă 🔁</button>
+        </div>
       </div>
 
-      <p style="margin-top:10px; opacity:.7; font-size:.9rem;">
-        Sfaturi: Apasă pe stele pentru scântei 🌟 • Space = shuffle culori • Țintește pisica, ferește-te de câine.
-      </p>
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:12px;">
+        <button class="btn" onclick="openGame()">Joacă ‘Prinde Pisica’ 🐱</button>
+        <button class="btn" onclick="shuffleTheme()">Schimbă culorile</button>
+        <button class="btn" onclick="spuneCompliment()">Compliment pentru Ion 💖</button>
+        <button class="btn" onclick="openModal('modalHam')">Nu atingeți 😭</button>
+        <button class="btn" onclick="closeModal('modal1')">Închide</button>
+      </div>
     </div>
   </div>
 
-  <!-- Joc -->
+  <!-- SECOND MODAL: sad hamster -->
+  <div class="modal" id="modalHam" role="dialog" aria-modal="true">
+    <div class="content panel pixel-border">
+      <h3 style="margin:8px 0 10px;">Nu atingeți… ups! 🐹💧</h3>
+      <p style="margin:0 0 12px; opacity:.9;">Acuma Ion îi supărat și plânge. Dă-i un compliment ca să-i treacă! 😭</p>
+      <img src="https://media1.tenor.com/m/oSKKipnYg5MAAAAd/hamsti-hamster.gif" alt="Hamster plângăcios"
+           style="max-width:100%; width:320px; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.5); outline:3px solid var(--panel-border);" />
+      <div style="margin-top:14px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn" onclick="spuneCompliment()">Trimite un compliment 💌</button>
+        <button class="btn" onclick="closeModal('modalHam')">Îmi pare rău, închid</button>
+      </div>
+      <p style="margin-top:10px; opacity:.7; font-size:.9rem;">Tip: apasă în afara ferestrei ca să închizi.</p>
+    </div>
+  </div>
+
+  <!-- GAME -->
   <div class="game" id="game" aria-live="polite">
     <div class="content panel pixel-border" style="text-align:center;">
       <h2 style="margin:6px 0 14px">Prinde Pisica 🐱 (+ Câine șiret 🐶)</h2>
@@ -216,282 +242,133 @@
         <div id="gameDog" title="Nu da click pe mine!" style="display:none;">🐶</div>
       </div>
       <div style="margin-top:12px; display:flex; gap:10px; justify-content:center; flex-wrap:wrap;">
-        <button class="btn" onclick="resetGame()">Restart 🔁</button>
-        <button class="btn" onclick="exitGame()">Ieșire ✖</button>
+        <button class="btn" onclick="resetGame()">Restart</button>
+        <button class="btn" onclick="exitGame()">Ieșire</button>
       </div>
     </div>
   </div>
 
-  <!-- Toast -->
   <div class="toast" id="toast"></div>
-
-  <!-- Scanlines -->
   <div class="scanlines"></div>
 
 <script>
-  /* ===== Utilitare ===== */
-  const rand=(min,max)=> Math.random()*(max-min)+min;
-  const pick=arr=> arr[(Math.random()*arr.length)|0];
-  const clamp=(v,a,b)=> Math.max(a,Math.min(b,v));
-  const palette=["#00ffff","#ff66cc","#ffcc00","#00ff66","#ffffff"];
+/* ===== Utils ===== */
+const rand=(a,b)=>Math.random()*(b-a)+a;
+const pick=a=>a[(Math.random()*a.length)|0];
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+const palette=["#00ffff","#ff66cc","#ffcc00","#00ff66","#ffffff"];
 
-  /* Glume & Complimente pentru colegul Ion */
-  const glume=[
-    "Ion e ca un commit bun: clar, curat și te salvează când e panică.",
-    "Se spune că stelele clipesc când dansează Ion. Confirmăm. 🌟",
-    "Ion intră-n birou → serverul devine mai rapid de frică. 😂",
-    "Bug-urile îl strigă pe nume: ‘Ne predăm, Ioane!’",
-    "Când Ion face pauză, și timpul ia pauză. #respect ⏱️",
-    "Ion nu are nevoie de cafea. Cafeaua are nevoie de Ion.",
-    "Dacă ar fi unit test, Ion ar avea 100% coverage la glume bune.",
-    "Ion apasă Enter și moralul echipei crește cu +10 la fericire.",
-    "Legenda zice că Ctrl+Z a fost inventat după ce l-au văzut pe Ion dansând.",
-    "Ion + tastatură = simfonie. 🎹💻"
-  ];
-  const complimente=[
-    "Ion, tu ești debugger-ul bunului simț. 💡",
-    "Când apare Ion, apare și soluția. În mod elegant.",
-    "Ești genul de coleg pe care-l recomanzi și inamicilor. 😄",
-    "Ai talentul ăla rar: faci și codul, și oamenii să zâmbească.",
-    "Cu tine, orice task devine achievable. Respect! 🙌",
-    "Creativ, calm și funny — pachet complet, Ion!",
-    "Tu pui ‘pro’ în productivitate și ‘fun’ în funcție.",
-    "Ai vibe de ‘merge la prima’ — în cel mai bun sens!",
-    "Ești proof că bunătatea scalează mai bine ca microserviciile. 💖",
-    "Rămâi așa: autentic și molipsitor de optimist."
-  ];
+/* Parallax */
+addEventListener('mousemove',e=>{
+  const x=(e.clientX/innerWidth-.5), y=(e.clientY/innerHeight-.5);
+  document.documentElement.style.setProperty('--px',(x*16).toFixed(1)+'px');
+  document.documentElement.style.setProperty('--py',(y*12).toFixed(1)+'px');
+  document.documentElement.style.setProperty('--tilt',(x*y*2).toFixed(2)+'deg');
+},{passive:true});
 
-  /* ===== Stele ===== */
-  function spawnStars(container,count,sMin,sMax,spMin,spMax){
-    for(let i=0;i<count;i++){
-      const s=document.createElement('span');
-      const size=rand(sMin,sMax);
-      s.style.width=s.style.height=size+"px";
-      s.style.left=rand(0,100)+"%";
-      s.style.top=rand(0,100)+"%";
-      s.style.color=pick(palette);
-      s.style.setProperty('--fy', rand(spMin,spMax)+"s");
-      s.style.setProperty('--tw', rand(2,4.5)+"s");
-      s.style.animationDelay=(rand(-20,20))+"s, "+(rand(0,3))+"s";
-      s.addEventListener('click',(e)=>{
-        e.stopPropagation();
-        burst(e.clientX,e.clientY,s.style.color);
-        // plus la Ion-o-metru
-        incMeter(2);
-        // repoziționează steaua
-        s.style.left=rand(0,100)+"%";
-        s.style.top=rand(0,100)+"%";
-      });
-      container.appendChild(s);
-    }
+/* Stars (pointer-events:none for mobile so title is clickable) */
+function spawnStars(container,count,sMin,sMax,spMin,spMax){
+  for(let i=0;i<count;i++){
+    const s=document.createElement('span'), size=rand(sMin,sMax);
+    s.style.width=s.style.height=size+"px";
+    s.style.left=rand(0,100)+"%"; s.style.top=rand(0,100)+"%";
+    s.style.color=pick(palette);
+    s.style.setProperty('--fy', rand(spMin,spMax)+"s");
+    s.style.setProperty('--tw', rand(2,4.5)+"s");
+    s.style.animationDelay=(rand(-20,20))+"s, "+(rand(0,3))+"s";
+    container.appendChild(s);
   }
-  spawnStars(document.getElementById('stars'),140,2,4.5,12,26);
-  spawnStars(document.getElementById('stars2'),80,3.5,6,18,36);
+}
+spawnStars(document.getElementById('stars'),120,2,4.2,12,26);
+spawnStars(document.getElementById('stars2'),70,3.2,5.5,18,36);
 
-  /* ===== Titlu ricoșeu ===== */
-  const title=document.getElementById('title');
-  let tx=120,ty=120,dx=2.0,dy=1.6;
-  function ripple(x,y){
-    const r=document.createElement('div'); r.className='ripple'; r.style.left=x+"px"; r.style.top=y+"px";
-    document.body.appendChild(r); setTimeout(()=>r.remove(),650);
-  }
-  (function animateTitle(){
-    const rect=title.getBoundingClientRect(); const w=innerWidth,h=innerHeight; let hit=false;
-    if(tx+rect.width>=w || tx<=10){ dx*=-1; hit=true; ripple(tx+rect.width/2,ty+rect.height/2); }
-    if(ty+rect.height>=h || ty<=10){ dy*=-1; hit=true; ripple(tx+rect.width/2,ty+rect.height/2); }
-    tx+=dx; ty+=dy; title.style.left=tx+"px"; title.style.top=ty+"px";
-    if(hit) shuffleTheme(0.15);
-    requestAnimationFrame(animateTitle);
-  })();
-  title.onclick=()=> openModal('modal1');
+/* Shooting stars */
+function shootingStar(){
+  const el=document.createElement('div');
+  el.style.position='fixed'; el.style.zIndex='-2'; el.style.pointerEvents='none';
+  const startX=rand(0, innerWidth*0.8), startY=rand(-40, innerHeight*0.3);
+  const len=rand(110,220);
+  el.style.left=startX+'px'; el.style.top=startY+'px';
+  el.style.width=len+'px'; el.style.height='2px';
+  el.style.background='linear-gradient(90deg, rgba(255,255,255,.9), transparent)';
+  el.style.filter='drop-shadow(0 0 6px rgba(255,255,255,.8))';
+  const rot = `rotate(${rand(15,35)}deg)`; el.style.transform=rot; el.style.opacity='0';
+  document.body.appendChild(el);
+  el.animate([{opacity:0, transform:rot+' translate(0,0)'},{opacity:1, transform:rot+' translate(80px,60px)'},{opacity:0, transform:rot+' translate(160px,120px)'}],{duration:1200,easing:'ease-out'});
+  setTimeout(()=>el.remove(),1300);
+}
+setInterval(()=>{ if(Math.random()<0.3) shootingStar(); },2200);
 
-  /* ===== Efecte ===== */
-  function burst(x,y,color=pick(palette)){
-    for(let i=0;i<18;i++){
-      const sp=document.createElement('div'); sp.className='spark';
-      sp.style.left=x+"px"; sp.style.top=y+"px"; sp.style.color=color;
-      const ang=Math.random()*Math.PI*2; const dist=rand(40,140);
-      sp.style.setProperty('--dx', Math.cos(ang)*dist+"px");
-      sp.style.setProperty('--dy', Math.sin(ang)*dist+"px");
-      document.body.appendChild(sp); setTimeout(()=>sp.remove(),700);
-    }
-  }
-  function popup(text,x,y){
-    const el=document.createElement('div');
-    el.textContent=text; el.style.position='fixed'; el.style.left=(x-6)+'px'; el.style.top=(y-12)+'px';
-    el.style.fontWeight='900'; el.style.textShadow='0 0 8px rgba(255,255,255,.6)'; el.style.zIndex=8; el.style.pointerEvents='none';
-    el.animate([{transform:'translateY(0)',opacity:1},{transform:'translateY(-40px)',opacity:0}],{duration:650,easing:'ease-out'});
-    document.body.appendChild(el); setTimeout(()=>el.remove(),660);
-  }
+/* Screensaver-style bouncing title with mobile click */
+const title=document.getElementById('title');
+let vx=2.0, vy=1.6;
+let tx=16, ty=16;
 
-  /* ===== Theme & modale ===== */
-  function shuffleTheme(glow=0){
-    const root=document.documentElement; const cols=[...palette]; cols.push(cols.shift());
-    root.style.setProperty('--c1', pick(cols)); root.style.setProperty('--c2', pick(cols));
-    root.style.setProperty('--c3', pick(cols)); root.style.setProperty('--c4', pick(cols));
-    if(glow){ document.body.classList.add('flash'); setTimeout(()=>document.body.classList.remove('flash'), glow*1000); }
-    incMeter(3);
-  }
-  addEventListener('keydown', e=>{ if(e.code==='Space'){ shuffleTheme(0.18); }});
-  function openModal(id){ document.getElementById(id).style.display='flex'; }
-  function closeModal(id){ document.getElementById(id).style.display='none'; }
-  addEventListener('click', e=>{ if(e.target.classList.contains('modal')) closeModal(e.target.id); });
+function measure(){ return {w:title.offsetWidth, h:title.offsetHeight}; }
+function stepBounce(){
+  const {w,h}=measure(), W=innerWidth, H=innerHeight;
+  if(tx+w>=W-8 || tx<=8) vx*=-1;
+  if(ty+h>=H-8 || ty<=8) vy*=-1;
+  tx+=vx; ty+=vy;
+  title.style.left=tx+"px"; title.style.top=ty+"px";
+  requestAnimationFrame(stepBounce);
+}
+addEventListener('resize', ()=>{ const {w,h}=measure(); tx=Math.min(Math.max(8,tx), innerWidth-w-8); ty=Math.min(Math.max(8,ty), innerHeight-h-8); });
 
-  /* ===== Ion-o-metru + toast + glume/complimente ===== */
-  const meterFill=document.getElementById('meterFill');
-  const toast=document.getElementById('toast');
-  let meter=0;
-  function incMeter(v=1){
-    meter=clamp(meter+v,0,100);
-    meterFill.style.width=meter+'%';
-  }
-  function showToast(msg){
-    toast.textContent=msg; toast.style.display='block';
-    toast.animate([{transform:'translateX(-50%) translateY(20px)',opacity:0},{transform:'translateX(-50%) translateY(0)',opacity:1}],{duration:220,easing:'ease-out'});
-    setTimeout(()=>{
-      toast.animate([{opacity:1},{opacity:0}],{duration:250,easing:'ease-in'});
-      setTimeout(()=>toast.style.display='none',240);
-    }, 2200);
-  }
-  function spuneGluma(){
-    const g=pick(glume);
-    showToast("😂 Glumă: " + g);
-    incMeter(6);
-  }
-  function spuneCompliment(){
-    const c=pick(complimente);
-    showToast("💖 Compliment: " + c);
-    incMeter(8);
-  }
-  function miniEaster(){
-    showToast("🆘 Panică rezolvată: dăm vina pe… bug-ul imaginar! 🐞");
-    incMeter(4);
-    burst(innerWidth/2, innerHeight/2, '#ffd166');
-  }
+/* Make it easy to open on mobile (tap anywhere on text) */
+const openMain=()=> openModal('modal1');
+title.addEventListener('click', openMain);
+title.addEventListener('touchstart', (e)=>{ e.preventDefault(); openMain(); }, {passive:false});
 
-  /* ===== Joc: Prinde Pisica (cu Câine) ===== */
-  const gameEl=document.getElementById('game');
-  const stage=document.getElementById('stage');
-  const cat=document.getElementById('gameCat');
-  const dog=document.getElementById('gameDog');
-  const hud=document.getElementById('hud');
-  const scoreEl=document.getElementById('score');
-  const speedEl=document.getElementById('speedLabel');
-  const levelEl=document.getElementById('levelLabel');
-  const timeEl=document.getElementById('timeLabel');
+/* Start bouncing */
+requestAnimationFrame(stepBounce);
 
-  let score=0, level=1, target=10;
-  let timeLeft=30, size=96;
-  let baseInterval=1400, interval=baseInterval, speed=1;
-  let moveTimer=null, tickRAF=null;
-  const rafMap=new WeakMap();
-  let dogActive=false;
-
-  function openGame(){
-    closeModal('modal1'); gameEl.style.display='flex'; hud.style.display='block'; resetGame();
+/* FX helpers */
+function burst(x,y,color=pick(palette)){
+  for(let i=0;i<16;i++){
+    const sp=document.createElement('div'); sp.className='spark'; sp.style.left=x+"px"; sp.style.top=y+"px"; sp.style.color=color;
+    const ang=Math.random()*Math.PI*2, dist=rand(36,120);
+    sp.style.setProperty('--dx',Math.cos(ang)*dist+"px"); sp.style.setProperty('--dy',Math.sin(ang)*dist+"px");
+    document.body.appendChild(sp); setTimeout(()=>sp.remove(),680);
   }
-  function exitGame(){
-    gameEl.style.display='none'; hud.style.display='none';
-    clearTimeout(moveTimer); cancelAnimationFrame(tickRAF);
-    const idC=rafMap.get(cat); if(idC) cancelAnimationFrame(idC);
-    const idD=rafMap.get(dog); if(idD) cancelAnimationFrame(idD);
-  }
-  function resetGame(){
-    score=0; level=1; target=10; timeLeft=30; size=96; baseInterval=1400; interval=baseInterval; speed=1;
-    dogActive=false; dog.style.display='none';
-    cat.style.setProperty('--size', size+'px');
-    centerEl(cat); centerEl(dog);
-    updateHUD(); clearTimeout(moveTimer); cancelAnimationFrame(tickRAF);
-    scheduleMove(); startTimer();
-  }
-  function updateHUD(){
-    scoreEl.textContent=score; speedEl.textContent=speed.toFixed(1)+'x'; levelEl.textContent=level; timeEl.textContent=timeLeft.toFixed(1)+'s';
-  }
+}
+function ripple(x,y){ const r=document.createElement('div'); r.className='ripple'; r.style.left=x+"px"; r.style.top=y+"px"; document.body.appendChild(r); setTimeout(()=>r.remove(),620); }
+addEventListener('click',(e)=>{ if(e.target===document.body) burst(e.clientX,e.clientY, pick(palette)); });
 
-  function scheduleMove(){
-    clearTimeout(moveTimer);
-    moveTimer=setTimeout(()=>{
-      moveElSmooth(cat, interval);
-      if(dogActive && Math.random()<0.8){
-        moveElSmooth(dog, interval*rand(0.85,1.35), rand(-60,60));
-      }
-      scheduleMove();
-    }, interval);
-  }
+/* Theme + modals */
+function shuffleTheme(){
+  const root=document.documentElement, cols=[...palette]; cols.push(cols.shift());
+  root.style.setProperty('--c1',pick(cols)); root.style.setProperty('--c2',pick(cols)); root.style.setProperty('--c3',pick(cols)); root.style.setProperty('--c4',pick(cols));
+  incMeter(3);
+}
+function openModal(id){ document.getElementById(id).style.display='flex'; }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+addEventListener('click', e=>{ if(e.target.classList.contains('modal')) closeModal(e.target.id); });
 
-  function centerEl(el){
-    const r=stage.getBoundingClientRect(); setElPos(el, r.width/2, r.height/2);
-  }
-  function setElPos(el,x,y){
-    x=clamp(x,48,stage.clientWidth-48); y=clamp(y,48,stage.clientHeight-48);
-    el.style.left=x+'px'; el.style.top=y+'px';
-  }
-  function moveElSmooth(el, intervalHint=interval, jitter=0){
-    const start={x:parseFloat(el.style.left||"0"), y:parseFloat(el.style.top||"0")};
-    let tx=rand(48,stage.clientWidth-48)+jitter, ty=rand(48,stage.clientHeight-48)+jitter;
-    tx=clamp(tx,48,stage.clientWidth-48); ty=clamp(ty,48,stage.clientHeight-48);
-    const duration=Math.max(240, Math.min(900, intervalHint*0.6));
-    const t0=performance.now();
-    function step(){
-      const t=performance.now(); const p=Math.min(1,(t-t0)/duration);
-      const e=p<0.5?2*p*p:-1+(4-2*p)*p;
-      setElPos(el, start.x+(tx-start.x)*e, start.y+(ty-start.y)*e);
-      if(p<1){ const id=requestAnimationFrame(step); rafMap.set(el,id); }
-    }
-    const id=requestAnimationFrame(step); rafMap.set(el,id);
-  }
-
-  cat.addEventListener('click',(e)=>{
-    score++; incMeter(3);
-    if(interval>260) interval=Math.max(260, interval-60);
-    speed=1400/interval;
-    if(score>=target){
-      level++; target+=8+Math.floor(level*1.2); size=Math.max(64,size-6);
-      cat.style.setProperty('--size', size+'px'); timeLeft+=4;
-      popup(`NIVEL ${level} 🔥`, innerWidth/2, 80); incMeter(6);
-    }
-    if(!dogActive){
-      dogActive=true; dog.style.display='block'; centerEl(dog);
-      moveElSmooth(dog, interval*1.1, rand(-40,40));
-      showToast("A apărut 🐶 Câinele Șiret! Ai grijă, scade puncte și timp.");
-    }
-    const rect=cat.getBoundingClientRect();
-    burst(rect.left+rect.width/2, rect.top+rect.height/2, pick(palette));
-    cat.classList.add('flash'); setTimeout(()=>cat.classList.remove('flash'),180);
-    moveElSmooth(cat, interval); scheduleMove(); updateHUD(); e.stopPropagation();
-  });
-
-  dog.addEventListener('click',(e)=>{
-    const rect=dog.getBoundingClientRect(); const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-    score=Math.max(0, score-2); timeLeft=Math.max(0, timeLeft-2);
-    popup('-2', cx, cy-20); burst(cx,cy,'#ff3355'); dog.classList.add('flash'); setTimeout(()=>dog.classList.remove('flash'),180);
-    moveElSmooth(dog, interval*0.9, rand(-40,40)); updateHUD(); e.stopPropagation();
-    showToast("🐶 Câinele zice: „Ham-ham, atenție, Ioane!”");
-  });
-
-  function startTimer(){
-    let last=performance.now();
-    function tick(){
-      const now=performance.now(); const dt=(now-last)/1000; last=now;
-      timeLeft-=dt;
-      if(timeLeft<=0){ popup('GAME OVER 💥', innerWidth/2, 100); showToast("Gata runda! Ion cere bis. 😄"); exitGame(); return; }
-      updateHUD(); tickRAF=requestAnimationFrame(tick);
-    }
-    tickRAF=requestAnimationFrame(tick);
-  }
-
-  stage.addEventListener('click',(e)=>{
-    const r=stage.getBoundingClientRect(); setElPos(cat, e.clientX-r.left, e.clientY-r.top);
-  });
-
-  /* Click global pentru scântei & vibe */
-  addEventListener('click',(e)=>{
-    if(e.target===document.body || e.target===title || e.target.classList.contains('panel')){
-      burst(e.clientX,e.clientY, pick(palette)); incMeter(1);
-    }
-  });
-
-  /* ===== Pornire: nu deschidem automat modalul ca să se vadă fundalul & titlul ===== */
-</script>
-</body>
-</html>
+/* Meter + jokes/compliments */
+const meterFill=document.getElementById('meterFill');
+const toast=document.getElementById('toast');
+let meter=0;
+function incMeter(v=1){ meter=clamp(meter+v,0,100); meterFill.style.width=meter+'%'; }
+const glume=[
+  "Ceasul nu-l întreabă pe Ion cât e ora — îl întreabă ‘cât de repede vrei să fie?’.",
+  "Când intră Ion în birou, și Wi-Fi-ul stă drepți.",
+  "Ion n-a pierdut niciodată un tab — doar le dă pauză în alt desktop.",
+  "La cafea, Ion zice ‘build & run’; ceașca execută.",
+  "Când plouă, norii fac deploy. Ion le face rollback dacă nu-i pe plac.",
+  "Ședințele cu Ion se optimizează singure la O(1) — intri și ieși fericit.",
+  "Bug-urile au un grup privat: ‘Feriți-vă de Ion’.",
+  "Ion prinde o idee din aer și-i face README.",
+  "Shortcut-ul preferat al timpului? Ion+Enter."
+];
+const complimente=[
+  "Ion, ești upgrade-ul la starea noastră de spirit. 🔥",
+  "Când ești tu pe task, totul devine simplu și elegant. 👏",
+  "Ai superputerea de a face oamenii să zâmbească. 😄",
+  "Calm + creativ = tu. Ne iese totul mai bine cu tine în echipă. 💪",
+  "Ești genul de coleg pe care îl vrei mereu lângă tine. 🤝",
+  "Mulțumim că aduci vibe bun. Se simte imediat! ✨"
+];
+function showToast(msg){
+  toast.textContent=msg; toast.style.display='block';
+  toast.animate([{transform:'translateX(-50%) translateY(20px)',opacity:0},{transform:'translateX(-50%) translateY(0)',opacity:1}],{duration:200,easing:'ease
