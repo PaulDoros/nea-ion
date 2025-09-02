@@ -371,4 +371,111 @@ const complimente=[
 ];
 function showToast(msg){
   toast.textContent=msg; toast.style.display='block';
-  toast.animate([{transform:'translateX(-50%) translateY(20px)',opacity:0},{transform:'translateX(-50%) translateY(0)',opacity:1}],{duration:200,easing:'ease
+  toast.animate([{transform:'translateX(-50%) translateY(20px)',opacity:0},{transform:'translateX(-50%) translateY(0)',opacity:1}],{duration:200,easing:'ease-out'});
+  setTimeout(()=>{ toast.animate([{opacity:1},{opacity:0}],{duration:220,easing:'ease-in'}); setTimeout(()=>toast.style.display='none',210); },2000);
+}
+function spuneCompliment(){ showToast("💖 " + pick(complimente)); incMeter(8); }
+function schimbaGluma(){ document.getElementById('glumaText').textContent = pick(glume); incMeter(5); }
+document.getElementById('glumaText').textContent = pick(glume);
+
+/* ===== Game ===== */
+const gameEl=document.getElementById('game');
+const stage=document.getElementById('stage');
+const cat=document.getElementById('gameCat');
+const dog=document.getElementById('gameDog');
+const hud=document.getElementById('hud');
+const scoreEl=document.getElementById('score');
+const speedEl=document.getElementById('speedLabel');
+const levelEl=document.getElementById('levelLabel');
+const timeEl=document.getElementById('timeLabel');
+
+let score=0, level=1, target=10;
+let timeLeft=30, size=84;
+let interval=1200, speed=1;
+let moveTimer=null, tickRAF=null;
+const rafMap=new WeakMap();
+let dogActive=false;
+
+function openGame(){ closeModal('modal1'); closeModal('modalHam'); gameEl.style.display='flex'; hud.style.display='block'; resetGame(); }
+function exitGame(){
+  gameEl.style.display='none'; hud.style.display='none';
+  clearTimeout(moveTimer); cancelAnimationFrame(tickRAF);
+  const idC=rafMap.get(cat); if(idC) cancelAnimationFrame(idC);
+  const idD=rafMap.get(dog); if(idD) cancelAnimationFrame(idD);
+}
+function resetGame(){
+  score=0; level=1; target=10; timeLeft=30; size=84; interval=1200; speed=1;
+  dogActive=false; dog.style.display='none';
+  cat.style.setProperty('--size', size+'px');
+  centerEl(cat); centerEl(dog);
+  updateHUD(); clearTimeout(moveTimer); cancelAnimationFrame(tickRAF);
+  scheduleMove(); startTimer();
+}
+function updateHUD(){ scoreEl.textContent=score; speedEl.textContent=speed.toFixed(1)+'x'; levelEl.textContent=level; timeEl.textContent=timeLeft.toFixed(1)+'s'; }
+
+function scheduleMove(){
+  clearTimeout(moveTimer);
+  moveTimer=setTimeout(()=>{
+    moveElSmooth(cat, interval);
+    if(dogActive && Math.random()<0.8){ moveElSmooth(dog, interval*rand(0.85,1.35), rand(-60,60)); }
+    scheduleMove();
+  }, interval);
+}
+function centerEl(el){ const r=stage.getBoundingClientRect(); setElPos(el, r.width/2, r.height/2); }
+function setElPos(el,x,y){ x=clamp(x,36,stage.clientWidth-36); y=clamp(y,36,stage.clientHeight-36); el.style.left=x+'px'; el.style.top=y+'px'; }
+function moveElSmooth(el, intervalHint=interval, jitter=0){
+  const start={x:parseFloat(el.style.left||"0"), y:parseFloat(el.style.top||"0")};
+  let tx=rand(36,stage.clientWidth-36)+jitter, ty=rand(36,stage.clientHeight-36)+jitter;
+  tx=clamp(tx,36,stage.clientWidth-36); ty=clamp(ty,36,stage.clientHeight-36);
+  const duration=Math.max(200, Math.min(800, intervalHint*0.55));
+  const t0=performance.now();
+  function step(){
+    const t=performance.now(); const p=Math.min(1,(t-t0)/duration);
+    const e=p<0.5?2*p*p:-1+(4-2*p)*p;
+    setElPos(el, start.x+(tx-start.x)*e, start.y+(ty-start.y)*e);
+    if(p<1){ const id=requestAnimationFrame(step); rafMap.set(el,id); }
+  }
+  const id=requestAnimationFrame(step); rafMap.set(el,id);
+}
+
+cat.addEventListener('click',(e)=>{
+  score++; incMeter(2);
+  if(interval>260) interval=Math.max(260, interval-60);
+  speed=1200/interval;
+  if(score>=target){
+    level++; target+=8+Math.floor(level*1.2); size=Math.max(60,size-6);
+    cat.style.setProperty('--size', size+'px'); timeLeft+=4;
+    showToast(`Nivel ${level} atins!`);
+  }
+  if(!dogActive){
+    dogActive=true; dog.style.display='block'; centerEl(dog);
+    moveElSmooth(dog, interval*1.1, rand(-40,40));
+  }
+  const rect=cat.getBoundingClientRect(); burst(rect.left+rect.width/2, rect.top+rect.height/2);
+  moveElSmooth(cat, interval); scheduleMove(); updateHUD(); e.stopPropagation();
+});
+
+dog.addEventListener('click',(e)=>{
+  const rect=dog.getBoundingClientRect(), cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
+  score=Math.max(0, score-2); timeLeft=Math.max(0, timeLeft-2);
+  showToast("🐶 Câinele ți-a furat 2 puncte și 2 secunde!");
+  burst(cx,cy,'#ff3355'); updateHUD(); e.stopPropagation();
+});
+
+function startTimer(){
+  let last=performance.now();
+  function tick(){
+    const now=performance.now(); const dt=(now-last)/1000; last=now;
+    timeLeft-=dt;
+    if(timeLeft<=0){ showToast("Gata runda!"); exitGame(); return; }
+    updateHUD(); tickRAF=requestAnimationFrame(tick);
+  }
+  tickRAF=requestAnimationFrame(tick);
+}
+stage.addEventListener('click',(e)=>{ const r=stage.getBoundingClientRect(); setElPos(cat, e.clientX-r.left, e.clientY-r.top); });
+
+/* Initial joke */
+document.getElementById('glumaText').textContent = pick(glume);
+</script>
+</body>
+</html>
