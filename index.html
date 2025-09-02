@@ -3,125 +3,40 @@
 <head>
 <meta charset="UTF-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Nea Ion cel mai TOP — Pixel Galaxy</title>
+<title>Nea Ion cel mai TOP — Pixel Galaxy (Univers dinamic + Warp)</title>
 <style>
   :root{
     --c1:#00ffff; --c2:#ff66cc; --c3:#ffcc00; --c4:#00ff66;
-    --panel:#13141a; --panel-border:#2ee7ff; --panel-outline:#8b5cf6; --text:#f8f8ff;
-    --ok:#00ffa6; --warn:#ffcc00; --bad:#ff4d6d;
-    /* Parallax vars (actualizate din JS) */
-    --px: 0px; --py: 0px; --tilt: 0deg;
+    --panel:#13141a; --panel-border:#2ee7ff; --text:#f8f8ff;
   }
 
-  /* Bază — fundal cosmic stratificat */
+  /* ===== Bază: canvas pe tot ecranul (univers) ===== */
   html,body{
-    margin:0
-; padding:0; overflow:hidden;
-    height:100vh; width:100vw;
-    /* strat 0: adâncime cosmică (navy -> indigo -> graphite) */
-    background:
-      radial-gradient(circle at 30% 20%, #0b1c3d 0%, #090f2c 42%, #060713 72%, #04040a 100%),
-      #04040a;
+    margin:0; padding:0; height:100vh; width:100vw; overflow:hidden;
+    background:#02030a; /* backup dacă canvas nu pornește */
     font-family:'Courier New', monospace; color:var(--text);
   }
+  #universe{
+    position:fixed; inset:0; z-index:-10; display:block; background: radial-gradient(1200px 800px at 50% 120%, #050a16 0%, #02030a 60%, #000 100%);
+  }
 
-  /* Strat 1: ceață cromatică lentă (rulează pe tot ecranul) */
-  .bg-gradient{
-    position:fixed; inset:0; z-index:-6;
+  /* Un mic “glow” deasupra canvas-ului, foarte subtil, pentru profunzime */
+  .sky-glow{
+    position:fixed; inset:0; z-index:-9; pointer-events:none;
     background:
-      radial-gradient(1200px 800px at 10% 110%, rgba(0,255,255,.10), transparent 60%),
-      radial-gradient(900px 600px at 90% -10%, rgba(255,102,204,.08), transparent 55%),
-      radial-gradient(700px 500px at 50% 50%, rgba(255,204,0,.06), transparent 60%),
-      linear-gradient(120deg, #050509, #0a0b12 60%, #050509);
-    animation: hue 50s linear infinite;
-    will-change: filter;
+      radial-gradient(800px 600px at 20% 30%, rgba(124,58,237,.10), transparent 60%),
+      radial-gradient(1000px 800px at 80% 70%, rgba(14,165,233,.08), transparent 65%),
+      radial-gradient(1200px 900px at 50% -10%, rgba(255,105,180,.06), transparent 70%);
+    mix-blend-mode:screen;
+    animation: skyDrift 80s linear infinite;
   }
-  @keyframes hue{ from{filter:hue-rotate(0deg)} to{filter:hue-rotate(360deg)} }
-
-  /* Strat 2: nebuloase cu parallax (mișcă ușor cu mouse-ul) */
-  .nebula{
-    position:fixed; inset:0; z-index:-5; pointer-events:none; mix-blend-mode:screen;
-    transform: translate(var(--px), var(--py)) rotate(var(--tilt));
-    transition: transform .12s ease-out;
-    background:
-      radial-gradient(900px 700px at 20% 40%, rgba(124,58,237,.10), transparent 60%),
-      radial-gradient(1100px 800px at 80% 55%, rgba(14,165,233,.08), transparent 65%),
-      radial-gradient(1400px 900px at 50% 120%, rgba(255,105,180,.06), transparent 70%);
-    filter: saturate(120%) blur(0.2px);
-    animation: nebulaDrift 90s ease-in-out infinite;
-  }
-  @keyframes nebulaDrift{
-    0%{ transform: translate(var(--px), var(--py)) rotate(0deg) }
-    50%{ transform: translate(calc(var(--px) * 1.4), calc(var(--py) * 1.4)) rotate(1deg) }
-    100%{ transform: translate(var(--px), var(--py)) rotate(0deg) }
+  @keyframes skyDrift{
+    0%{transform:translate(0,0) scale(1)}
+    50%{transform:translate(-40px,30px) scale(1.04)}
+    100%{transform:translate(0,0) scale(1)}
   }
 
-  /* Strat 3: aurore (benzi conice animate) */
-  .aurora{
-    position:fixed; inset:-10% -10%; z-index:-4; pointer-events:none;
-    background:
-      conic-gradient(from 0deg at 20% 20%, rgba(0,255,153,.07), transparent 35%),
-      conic-gradient(from 180deg at 80% 60%, rgba(0,204,255,.06), transparent 40%),
-      conic-gradient(from 300deg at 50% 100%, rgba(255,102,204,.05), transparent 30%);
-    filter: blur(18px) saturate(120%);
-    animation: auroraFlow 30s linear infinite;
-    mix-blend-mode: screen;
-  }
-  @keyframes auroraFlow{
-    from{ transform: rotate(0deg) scale(1) }
-    50%{ transform: rotate(3deg) scale(1.03) }
-    to{ transform: rotate(0deg) scale(1) }
-  }
-
-  /* Strat 4: sferă neon difuză (decor) */
-  .orbs{ position:fixed; inset:0; z-index:-3; pointer-events:none; filter: blur(20px) saturate(120%); }
-  .orb{ position:absolute; width:240px; height:240px; border-radius:50%;
-    background: radial-gradient(circle at 30% 30%, rgba(255,255,255,.8), rgba(255,255,255,0) 60%),
-                radial-gradient(circle at 70% 70%, currentColor, rgba(0,0,0,0) 70%);
-    opacity:.12; animation:drift 40s linear infinite; }
-  .o1{ color:var(--c1); top:70%; left:5%; animation-duration:48s}
-  .o2{ color:var(--c2); top:20%; left:75%; animation-duration:42s}
-  .o3{ color:var(--c4); top:50%; left:40%; animation-duration:55s}
-  @keyframes drift{0%{transform:translate(0,0) rotate(0) scale(1)}
-                   50%{transform:translate(120px,-80px) rotate(180deg) scale(1.15)}
-                   100%{transform:translate(0,0) rotate(360deg) scale(1)}}
-
-  /* Strat 5: stele (două straturi) + stele căzătoare */
-  .stars, .stars2{
-    position:fixed; inset:0; z-index:-2; overflow:hidden; pointer-events:none;
-  }
-  .stars span, .stars2 span{
-    position:absolute; pointer-events:auto; border-radius:50%; opacity:.9;
-    filter: drop-shadow(0 0 6px currentColor);
-    animation: floatY var(--fy) linear infinite, twinkle var(--tw) ease-in-out infinite;
-    will-change: transform, opacity;
-  }
-  @keyframes floatY{ from{ transform: translateY(10vh)} to{ transform: translateY(-190vh)} }
-  @keyframes twinkle{ 0%,100%{ opacity:.25; transform: scale(.7)} 50%{opacity:1; transform: scale(1.2)} }
-
-  /* Strat 6: zgomot fin (granulație) */
-  .noise{
-    position:fixed; inset:-2% -2%; z-index:-1; pointer-events:none;
-    opacity:.08; mix-blend-mode: soft-light;
-    background:
-      repeating-radial-gradient(circle at 10% 20%, rgba(255,255,255,.03) 0 1px, transparent 1px 3px),
-      repeating-linear-gradient(  0deg, rgba(0,0,0,.06) 0 2px, transparent 2px 4px),
-      repeating-linear-gradient( 90deg, rgba(255,255,255,.03) 0 1px, transparent 1px 3px);
-    animation: noisePulse 6s ease-in-out infinite;
-  }
-  @keyframes noisePulse{
-    0%,100% { opacity:.06 }
-    50%     { opacity:.10 }
-  }
-
-  /* Scanlines + vignette */
-  .scanlines{ position:fixed; inset:0; z-index:10; pointer-events:none;
-    background:
-      radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,.45) 100%),
-      repeating-linear-gradient(to bottom, rgba(255,255,255,.04) 0 2px, transparent 2px 4px);
-    mix-blend-mode: screen; }
-
-  /* Titlul neon (ricoșeu) */
+  /* ===== Titlu neon care ricoșează ===== */
   .center-text{
     position:absolute; left:100px; top:100px; z-index:3;
     font-weight:900; font-size:clamp(2rem,6vw,4.2rem); line-height:1;
@@ -135,7 +50,7 @@
   @keyframes gradientFlow{0%{background-position:0 50%}50%{background-position:100% 50%}100%{background-position:0 50%}}
   @keyframes pulse{0%,100%{transform:scale(1)}50%{transform:scale(1.08) rotate(1.2deg)}}
 
-  /* Panouri, butoane, HUD, joc, actori, FX */
+  /* ===== Panouri / butoane / HUD ===== */
   .panel{
     background: linear-gradient(180deg, rgba(255,255,255,.06), rgba(255,255,255,.03));
     backdrop-filter: blur(6px);
@@ -155,22 +70,14 @@
   }
   .btn:active{ transform:translateY(2px); box-shadow:0 2px 0 #000, 0 0 6px rgba(255,102,204,.6) }
 
-  .meter{height:12px; background:rgba(255,255,255,.1); border:1px solid rgba(255,255,255,.2); border-radius:999px; overflow:hidden;}
-  .meter > span{display:block; height:100%; width:0%; background:linear-gradient(90deg,var(--ok),var(--warn),var(--bad)); transition:width .35s ease;}
-  .toast{ position:fixed; bottom:16px; left:50%; transform:translateX(-50%); z-index:9;
-    padding:10px 14px; border-radius:10px; color:#0b0b13; background:#fefefe;
-    border:2px solid var(--panel-border); box-shadow:0 10px 30px rgba(0,0,0,.45);
-    font-weight:800; display:none; max-width:min(92vw,680px); text-align:center; }
+  .hud{ position:fixed; top:12px; left:12px; z-index:5; padding:10px 14px; font-weight:800; }
+  .hud small{opacity:.8}
 
   .modal{ position:fixed; inset:0; display:none; z-index:6; justify-content:center; align-items:center; background:rgba(0,0,0,.65); }
   .modal .content{ width:min(760px,92vw); padding:22px; text-align:center; }
 
-  .hud{ position:fixed; top:12px; left:12px; z-index:5; padding:10px 14px; font-weight:800; letter-spacing:1px; }
-  .hud small{opacity:.8}
-
   .game{ position:fixed; inset:0; display:none; z-index:7; justify-content:center; align-items:center; gap:16px; background:rgba(0,0,0,.6); }
   .stage{ position:relative; width:min(900px, 92vw); height:min(60vh, 520px); overflow:hidden; padding:16px; }
-
   #gameCat,#gameDog{
     position:absolute; text-align:center; user-select:none; cursor:pointer; transform:translate(-50%,-50%);
     filter:drop-shadow(0 4px 10px rgba(0,0,0,.6)) drop-shadow(0 0 16px rgba(255,255,255,.3));
@@ -178,30 +85,32 @@
   #gameCat{ --size:96px; width:var(--size); height:var(--size); line-height:var(--size); font-size:calc(var(--size)*.66); }
   #gameDog{ width:84px; height:84px; line-height:84px; font-size:56px; opacity:.95; }
 
-  .flash{ animation: flash .18s ease; }
-  @keyframes flash{ from{filter:brightness(1.4)} to{filter:brightness(1)} }
+  /* Scanlines ușoare */
+  .scanlines{ position:fixed; inset:0; z-index:10; pointer-events:none;
+    background:
+      radial-gradient(ellipse at 50% 50%, rgba(0,0,0,0) 60%, rgba(0,0,0,.45) 100%),
+      repeating-linear-gradient(to bottom, rgba(255,255,255,.03) 0 2px, transparent 2px 4px);
+    mix-blend-mode:screen;
+  }
+
+  /* Efecte mici */
   .ripple{ position:fixed; width:12px; height:12px; border-radius:50%; border:2px solid rgba(255,255,255,.45);
            pointer-events:none; z-index:2; transform:translate(-50%,-50%); animation:ripple .6s ease-out forwards; }
   @keyframes ripple{ from{opacity:.8; transform:translate(-50%,-50%) scale(.4)} to{opacity:0; transform:translate(-50%,-50%) scale(8)} }
-  .spark{ position:fixed; width:8px; height:8px; border-radius:2px; pointer-events:none; background:currentColor; z-index:4; animation:pop .65s ease-out forwards; }
-  @keyframes pop{0%{opacity:1; transform:translate(0,0) scale(1)}100%{opacity:0; transform:translate(var(--dx),var(--dy)) scale(.2)}}
+  .flash{ animation: flash .18s ease; }
+  @keyframes flash{ from{filter:brightness(1.4)} to{filter:brightness(1)} }
 </style>
 </head>
 <body>
 
-  <!-- STRATURI DE FUNDAL -->
-  <div class="bg-gradient"></div>
-  <div class="nebula"></div>
-  <div class="aurora"></div>
-  <div class="orbs"><div class="orb o1"></div><div class="orb o2"></div><div class="orb o3"></div></div>
-  <div class="stars" id="stars"></div>
-  <div class="stars2" id="stars2"></div>
-  <div class="noise"></div>
+  <!-- CANVAS UNIVERS (noul super-fundal) -->
+  <canvas id="universe"></canvas>
+  <div class="sky-glow"></div>
 
-  <!-- TITLU -->
+  <!-- Titlu ricoșeu -->
   <div class="center-text" id="title" title="Deschide meniul">🎉 Nea Ion cel mai TOP 🎉</div>
 
-  <!-- HUD -->
+  <!-- HUD (joc) -->
   <div class="hud panel pixel-border" id="hud" style="display:none;">
     <div><span>🐱 Scor:</span> <span id="score">0</span></div>
     <div><small>⚡ Viteză:</small> <span id="speedLabel">1.0x</span></div>
@@ -209,40 +118,50 @@
     <div><small>⏳ Timp:</small> <span id="timeLabel">30.0s</span></div>
   </div>
 
-  <!-- MODAL PRINCIPAL -->
+  <!-- MODAL principal -->
   <div class="modal" id="modal1" role="dialog" aria-modal="true">
     <div class="content panel pixel-border">
       <h2 style="margin:8px 0 6px">Ia uite-l pe Nea Ion 🕺</h2>
-      <p style="margin:0 0 14px; opacity:.85">Mod petrecere galactică. Alege distracția și fă-l pe Ion să râdă!</p>
-
-      <!-- Ion GIF + slogan -->
+      <p style="margin:0 0 14px; opacity:.85">Universul s-a pregătit special pentru Ion. Dă-i drumul la distracție!</p>
       <div style="margin:10px auto 18px; display:flex; flex-direction:column; align-items:center; gap:10px;">
         <div style="font-size:1.2rem; font-weight:900; letter-spacing:.5px;">Eu sunt Ion, cel mai tare dansator</div>
         <img src="https://media2.giphy.com/media/v1.Y2lkPTc5MGI3NjExNnRzM25yZjl6cWVzOTRqNmd5aWJzcjVweGR0N3Nwem1jendzaGI1dCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/BK1EfIsdkKZMY/giphy.gif"
              alt="Ion dansează" style="max-width:100%; width:360px; border-radius:12px; box-shadow:0 12px 30px rgba(0,0,0,.5); outline:3px solid var(--panel-border);"/>
       </div>
-
-      <!-- Ion-o-metru -->
-      <div style="margin:8px 0 4px; font-weight:800;">📈 Ion-o-metru (nivel de bună dispoziție)</div>
-      <div class="meter"><span id="meterFill"></span></div>
-
-      <!-- Butoane fun -->
-      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap; margin-top:14px;">
+      <div style="display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
         <button class="btn" onclick="openGame()">Joacă ‘Prinde Pisica’ 🐱</button>
-        <button class="btn" onclick="shuffleTheme()">Schimbă culorile 🎨</button>
-        <button class="btn" onclick="spuneGluma()">Spune o glumă cu Ion 😂</button>
-        <button class="btn" onclick="spuneCompliment()">Compliment pentru Ion 💖</button>
-        <button class="btn" onclick="miniEaster()">Buton de panică 🆘</button>
+        <button class="btn" onclick="openModal('controls')">Controale fundal 🌌</button>
         <button class="btn" onclick="closeModal('modal1')">Închide ✖</button>
       </div>
-
       <p style="margin-top:10px; opacity:.7; font-size:.9rem;">
-        Sfaturi: apasă pe stele pentru scântei 🌟 • Space = shuffle culori • Țintește pisica, ferește-te de câine.
+        Trucuri Univers: Ține apăsat <b>W</b> = warp 🌀 • Ține apăsat <b>C</b> = constelații ✨ • Mișcă mouse-ul pentru parallax.
       </p>
     </div>
   </div>
 
-  <!-- JOC -->
+  <!-- MODAL: Controale fundal -->
+  <div class="modal" id="controls" role="dialog" aria-modal="true">
+    <div class="content panel pixel-border">
+      <h3 style="margin:8px 0 10px;">Controale pentru UNIVERS 🌌</h3>
+      <div style="text-align:left; margin:0 auto; max-width:560px; line-height:1.6;">
+        <ul style="margin:0; padding-left:18px;">
+          <li><b>W</b> (ține apăsat): Hyper-Warp (zbor printre stele)</li>
+          <li><b>C</b> (ține apăsat): Conexiuni de constelație</li>
+          <li><b>S</b>: Activează/dezactivează stelele căzătoare</li>
+          <li><b>+</b>/<b>-</b>: Mai multe/mai puține stele</li>
+          <li><b>R</b>: Reset univers (re-generează stelele)</li>
+          <li><b>Click</b>: Undă/ripple și scântei</li>
+        </ul>
+      </div>
+      <div style="margin-top:14px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+        <button class="btn" onclick="toggleShooters()">Stele căzătoare ON/OFF 🌠</button>
+        <button class="btn" onclick="regenUniverse()">Re-generează stelele ♻️</button>
+        <button class="btn" onclick="closeModal('controls')">Închide ✖</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Joc -->
   <div class="game" id="game" aria-live="polite">
     <div class="content panel pixel-border" style="text-align:center;">
       <h2 style="margin:6px 0 14px">Prinde Pisica 🐱 (+ Câine șiret 🐶)</h2>
@@ -257,281 +176,398 @@
     </div>
   </div>
 
-  <!-- TOAST + SCANLINES -->
-  <div class="toast" id="toast"></div>
   <div class="scanlines"></div>
 
 <script>
-  /* ===== Utilitare ===== */
-  const rand=(min,max)=> Math.random()*(max-min)+min;
-  const pick=arr=> arr[(Math.random()*arr.length)|0];
-  const clamp=(v,a,b)=> Math.max(a,Math.min(b,v));
-  const palette=["#00ffff","#ff66cc","#ffcc00","#00ff66","#ffffff"];
+/* ============================================================
+   UNIVERS CANVAS: stele 3D, warp, constelații, parallax, meteoriți
+   ============================================================ */
+(() => {
+  const canvas = document.getElementById('universe');
+  const ctx = canvas.getContext('2d');
 
-  /* ===== Parallax pentru fundal (nebuloasele urmăresc discret mouse-ul) ===== */
-  document.addEventListener('mousemove',(e)=>{
-    const x=(e.clientX/window.innerWidth - .5);
-    const y=(e.clientY/window.innerHeight - .5);
-    const px=(x*20).toFixed(1)+'px';   // deplasare fină
-    const py=(y*20).toFixed(1)+'px';
-    const tilt=(x*y*2).toFixed(2)+'deg';
-    document.documentElement.style.setProperty('--px', px);
-    document.documentElement.style.setProperty('--py', py);
-    document.documentElement.style.setProperty('--tilt', tilt);
-  }, {passive:true});
+  let W = canvas.width = window.innerWidth;
+  let H = canvas.height = window.innerHeight;
+  let CX = W/2, CY = H/2;
 
-  /* ===== Stele ===== */
-  function spawnStars(container,count,sMin,sMax,spMin,spMax){
-    for(let i=0;i<count;i++){
-      const s=document.createElement('span');
-      const size=rand(sMin,sMax);
-      s.style.width=s.style.height=size+"px";
-      s.style.left=rand(0,100)+"%";
-      s.style.top=rand(0,100)+"%";
-      s.style.color=pick(palette);
-      s.style.setProperty('--fy', rand(spMin,spMax)+"s");
-      s.style.setProperty('--tw', rand(2,4.5)+"s");
-      s.style.animationDelay=(rand(-20,20))+"s, "+(rand(0,3))+"s";
-      s.addEventListener('click',(e)=>{
-        e.stopPropagation();
-        burst(e.clientX,e.clientY,s.style.color);
-        incMeter(2);
-        s.style.left=rand(0,100)+"%";
-        s.style.top=rand(0,100)+"%";
-      });
-      container.appendChild(s);
-    }
+  // Parametri
+  let starCount = Math.min(1200, Math.floor(W*H/1400)); // densitate în funcție de ecran
+  let fov = 400;          // focala pentru proiecție
+  let baseSpeed = 0.8;    // viteză bază spre camera (z-)
+  let warp = 1;           // factor warp (crește când ții W)
+  let warpTarget = 1;     // easing spre țintă
+  let constellations = false;
+  let shootersEnabled = true;
+
+  const stars = [];
+  const maxZ = 1200;
+  const minZ = 60;
+
+  const mouse = {x: CX, y: CY};
+
+  function rndSign(){ return Math.random() < 0.5 ? -1 : 1; }
+  function rand(a,b){ return Math.random()*(b-a)+a; }
+
+  function makeStar(){
+    return {
+      x: rand(-W, W),
+      y: rand(-H, H),
+      z: rand(minZ, maxZ),
+      px: 0, py: 0, // pentru trail
+      hue: rand(180, 320), // culori reci/violete
+      tw: rand(0.5, 1.5)   // twinkle factor
+    };
   }
-  spawnStars(document.getElementById('stars'),140,2,4.5,12,26);
-  spawnStars(document.getElementById('stars2'),80,3.5,6,18,36);
 
-  /* ===== Stele căzătoare (random) ===== */
-  function shootingStar(){
-    const el=document.createElement('div');
-    el.style.position='fixed'; el.style.zIndex='-2'; el.style.pointerEvents='none';
-    const startX=rand(0, window.innerWidth*0.8);
-    const startY=rand(-40, window.innerHeight*0.3);
-    const len=rand(120, 240);
-    el.style.left=startX+'px'; el.style.top=startY+'px';
-    el.style.width=len+'px'; el.style.height='2px';
-    el.style.background='linear-gradient(90deg, rgba(255,255,255,.9), transparent)';
-    el.style.filter='drop-shadow(0 0 6px rgba(255,255,255,.8))';
-    el.style.transform=`rotate(${rand(15,35)}deg)`;
-    el.style.opacity='0';
-    document.body.appendChild(el);
-    el.animate([{opacity:0, transform:el.style.transform+' translate(0,0)'},
-                {opacity:1, transform:el.style.transform+' translate(80px,60px)'},
-                {opacity:0, transform:el.style.transform+' translate(160px,120px)'}],
-                {duration:1200, easing:'ease-out'});
-    setTimeout(()=> el.remove(), 1300);
+  function init(){
+    stars.length = 0;
+    for(let i=0;i<starCount;i++) stars.push(makeStar());
   }
-  setInterval(()=>{ if(Math.random()<0.35) shootingStar(); }, 2200);
 
-  /* ===== Titlu ricoșeu ===== */
-  const title=document.getElementById('title');
-  let tx=120,ty=120,dx=2.0,dy=1.6;
+  function resize(){
+    W = canvas.width = window.innerWidth;
+    H = canvas.height = window.innerHeight;
+    CX = W/2; CY = H/2;
+    starCount = Math.min(1200, Math.floor(W*H/1400));
+    init();
+  }
+  window.addEventListener('resize', resize);
+
+  // Warp & constelații pe taste
+  const keys = new Set();
+  window.addEventListener('keydown', (e)=>{
+    keys.add(e.key.toLowerCase());
+    if(e.key==='+'){ starCount = Math.min(2000, starCount+100); regenUniverse(); }
+    if(e.key==='-'){ starCount = Math.max(200, starCount-100); regenUniverse(); }
+    if(e.key.toLowerCase()==='r') regenUniverse();
+    if(e.key.toLowerCase()==='s') toggleShooters();
+  });
+  window.addEventListener('keyup', (e)=> keys.delete(e.key.toLowerCase()));
+
+  canvas.addEventListener('mousemove', (e)=>{ mouse.x = e.clientX; mouse.y = e.clientY; });
+  window.addEventListener('click', (e)=> ripple(e.clientX, e.clientY));
+
   function ripple(x,y){
-    const r=document.createElement('div'); r.className='ripple'; r.style.left=x+"px"; r.style.top=y+"px";
+    const r=document.createElement('div');
+    r.className='ripple'; r.style.left=x+'px'; r.style.top=y+'px';
     document.body.appendChild(r); setTimeout(()=>r.remove(),650);
   }
-  (function animateTitle(){
-    const rect=title.getBoundingClientRect(); const w=innerWidth,h=innerHeight; let hit=false;
-    if(tx+rect.width>=w || tx<=10){ dx*=-1; hit=true; ripple(tx+rect.width/2,ty+rect.height/2); }
-    if(ty+rect.height>=h || ty<=10){ dy*=-1; hit=true; ripple(tx+rect.width/2,ty+rect.height/2); }
-    tx+=dx; ty+=dy; title.style.left=tx+"px"; title.style.top=ty+"px";
-    if(hit) shuffleTheme(0.15);
-    requestAnimationFrame(animateTitle);
-  })();
-  title.onclick=()=> openModal('modal1');
 
-  /* ===== Efecte ===== */
-  function burst(x,y,color=pick(palette)){
-    for(let i=0;i<18;i++){
-      const sp=document.createElement('div'); sp.className='spark';
-      sp.style.left=x+"px"; sp.style.top=y+"px"; sp.style.color=color;
-      const ang=Math.random()*Math.PI*2; const dist=rand(40,140);
-      sp.style.setProperty('--dx', Math.cos(ang)*dist+"px");
-      sp.style.setProperty('--dy', Math.sin(ang)*dist+"px");
-      document.body.appendChild(sp); setTimeout(()=>sp.remove(),700);
+  function regenUniverse(){
+    init();
+  }
+  window.regenUniverse = regenUniverse;
+  window.toggleShooters = ()=>{ shootersEnabled = !shootersEnabled; };
+
+  // Meteoriți (stele căzătoare)
+  function shootingStar(){
+    if(!shootersEnabled) return;
+    const len = rand(120, 240);
+    const x0 = rand(0, W*0.8);
+    const y0 = rand(-40, H*0.3);
+    ctx.save();
+    ctx.translate(x0, y0);
+    ctx.rotate(rand(15,35) * Math.PI/180);
+    const grad = ctx.createLinearGradient(0,0, len,0);
+    grad.addColorStop(0, 'rgba(255,255,255,0.9)');
+    grad.addColorStop(1, 'rgba(255,255,255,0.0)');
+    // desenăm în 3 frame-uri pentru "blink"
+    let t = 0;
+    function tail(){
+      t++;
+      ctx.globalCompositeOperation = 'lighter';
+      ctx.fillStyle = grad;
+      ctx.fillRect(0,0,len,2);
+      if(t<3) requestAnimationFrame(tail);
+      else ctx.restore();
+    }
+    tail();
+  }
+  setInterval(()=>{ if(Math.random()<0.4) shootingStar(); }, 1800);
+
+  function project(star){
+    const scale = fov / (star.z);
+    return {
+      x: star.x * scale + CX,
+      y: star.y * scale + CY,
+      s: (1.2 - star.z/maxZ) * 2.2  // mărimea aparentă
+    };
+  }
+
+  function update(dt){
+    // Warp țintă
+    warpTarget = keys.has('w') ? 5 : 1; // ține W pentru hyper-warp
+    warp += (warpTarget - warp) * Math.min(1, dt*4);
+
+    // constelații
+    constellations = keys.has('c');
+
+    // mișcare stele
+    const v = baseSpeed * warp * (1 + 0.5*Math.sin(performance.now()*0.001)); // mic puls
+    for(const s of stars){
+      s.z -= v*60*dt;
+      if(s.z < minZ){ // re-spawn în depărtare
+        s.z = maxZ;
+        s.x = rand(-W, W);
+        s.y = rand(-H, H);
+        s.px = 0; s.py = 0;
+      }
     }
   }
-  function popup(text,x,y){
-    const el=document.createElement('div');
-    el.textContent=text; el.style.position='fixed'; el.style.left=(x-6)+'px'; el.style.top=(y-12)+'px';
-    el.style.fontWeight='900'; el.style.textShadow='0 0 8px rgba(255,255,255,.6)'; el.style.zIndex=8; el.style.pointerEvents='none';
-    el.animate([{transform:'translateY(0)',opacity:1},{transform:'translateY(-40px)',opacity:0}],{duration:650,easing:'ease-out'});
-    document.body.appendChild(el); setTimeout(()=>el.remove(),660);
-  }
 
-  /* ===== Theme & modale ===== */
-  function shuffleTheme(glow=0){
-    const root=document.documentElement; const cols=[...palette]; cols.push(cols.shift());
-    root.style.setProperty('--c1', pick(cols)); root.style.setProperty('--c2', pick(cols));
-    root.style.setProperty('--c3', pick(cols)); root.style.setProperty('--c4', pick(cols));
-    if(glow){ document.body.classList.add('flash'); setTimeout(()=>document.body.classList.remove('flash'), glow*1000); }
-    incMeter(3);
-  }
-  addEventListener('keydown', e=>{ if(e.code==='Space'){ shuffleTheme(0.18); }});
-  function openModal(id){ document.getElementById(id).style.display='flex'; }
-  function closeModal(id){ document.getElementById(id).style.display='none'; }
-  addEventListener('click', e=>{ if(e.target.classList.contains('modal')) closeModal(e.target.id); });
+  function draw(dt){
+    // fade subtil pentru a păstra urme (motion blur ușor)
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(2,3,10,0.4)';
+    ctx.fillRect(0,0,W,H);
 
-  /* ===== Ion-o-metru + toast + glume/complimente ===== */
-  const meterFill=document.getElementById('meterFill');
-  const toast=document.getElementById('toast');
-  let meter=0;
-  function incMeter(v=1){ meter=clamp(meter+v,0,100); meterFill.style.width=meter+'%'; }
-  const glume=[
-    "Ion e ca un commit bun: clar, curat și te salvează când e panică.",
-    "Se spune că stelele clipesc când dansează Ion. Confirmăm. 🌟",
-    "Ion intră-n birou → serverul devine mai rapid de frică. 😂",
-    "Bug-urile îl strigă pe nume: ‘Ne predăm, Ioane!’",
-    "Când Ion face pauză, și timpul ia pauză. #respect ⏱️",
-    "Ion nu are nevoie de cafea. Cafeaua are nevoie de Ion.",
-    "Dacă ar fi unit test, Ion ar avea 100% coverage la glume bune.",
-    "Ion apasă Enter și moralul echipei crește cu +10 la fericire.",
-    "Legenda zice că Ctrl+Z a fost inventat după ce l-au văzut pe Ion dansând.",
-    "Ion + tastatură = simfonie. 🎹💻"
-  ];
-  const complimente=[
-    "Ion, tu ești debugger-ul bunului simț. 💡",
-    "Când apare Ion, apare și soluția. În mod elegant.",
-    "Ești genul de coleg pe care-l recomanzi și inamicilor. 😄",
-    "Ai talentul ăla rar: faci și codul, și oamenii să zâmbească.",
-    "Cu tine, orice task devine achievable. Respect! 🙌",
-    "Creativ, calm și funny — pachet complet, Ion!",
-    "Tu pui ‘pro’ în productivitate și ‘fun’ în funcție.",
-    "Ai vibe de ‘merge la prima’ — în cel mai bun sens!",
-    "Ești proof că bunătatea scalează mai bine ca microserviciile. 💖",
-    "Rămâi așa: autentic și molipsitor de optimist."
-  ];
-  function showToast(msg){
-    toast.textContent=msg; toast.style.display='block';
-    toast.animate([{transform:'translateX(-50%) translateY(20px)',opacity:0},{transform:'translateX(-50%) translateY(0)',opacity:1}],{duration:220,easing:'ease-out'});
-    setTimeout(()=>{
-      toast.animate([{opacity:1},{opacity:0}],{duration:250,easing:'ease-in'});
-      setTimeout(()=>toast.style.display='none',240);
-    }, 2200);
-  }
-  function spuneGluma(){ showToast("😂 Glumă: " + pick(glume)); incMeter(6); }
-  function spuneCompliment(){ showToast("💖 Compliment: " + pick(complimente)); incMeter(8); }
-  function miniEaster(){ showToast("🆘 Panică rezolvată: dăm vina pe… bug-ul imaginar! 🐞"); incMeter(4); burst(innerWidth/2, innerHeight/2, '#ffd166'); }
+    ctx.globalCompositeOperation = 'lighter';
 
-  /* ===== Joc: Prinde Pisica (cu Câine) ===== */
-  const gameEl=document.getElementById('game');
-  const stage=document.getElementById('stage');
-  const cat=document.getElementById('gameCat');
-  const dog=document.getElementById('gameDog');
-  const hud=document.getElementById('hud');
-  const scoreEl=document.getElementById('score');
-  const speedEl=document.getElementById('speedLabel');
-  const levelEl=document.getElementById('levelLabel');
-  const timeEl=document.getElementById('timeLabel');
-
-  let score=0, level=1, target=10;
-  let timeLeft=30, size=96;
-  let baseInterval=1400, interval=baseInterval, speed=1;
-  let moveTimer=null, tickRAF=null;
-  const rafMap=new WeakMap();
-  let dogActive=false;
-
-  function openGame(){ closeModal('modal1'); gameEl.style.display='flex'; hud.style.display='block'; resetGame(); }
-  function exitGame(){
-    gameEl.style.display='none'; hud.style.display='none';
-    clearTimeout(moveTimer); cancelAnimationFrame(tickRAF);
-    const idC=rafMap.get(cat); if(idC) cancelAnimationFrame(idC);
-    const idD=rafMap.get(dog); if(idD) cancelAnimationFrame(idD);
-  }
-  function resetGame(){
-    score=0; level=1; target=10; timeLeft=30; size=96; baseInterval=1400; interval=baseInterval; speed=1;
-    dogActive=false; dog.style.display='none';
-    cat.style.setProperty('--size', size+'px');
-    centerEl(cat); centerEl(dog);
-    updateHUD(); clearTimeout(moveTimer); cancelAnimationFrame(tickRAF);
-    scheduleMove(); startTimer();
-  }
-  function updateHUD(){ scoreEl.textContent=score; speedEl.textContent=speed.toFixed(1)+'x'; levelEl.textContent=level; timeEl.textContent=timeLeft.toFixed(1)+'s'; }
-
-  function scheduleMove(){
-    clearTimeout(moveTimer);
-    moveTimer=setTimeout(()=>{
-      moveElSmooth(cat, interval);
-      if(dogActive && Math.random()<0.8){ moveElSmooth(dog, interval*rand(0.85,1.35), rand(-60,60)); }
-      scheduleMove();
-    }, interval);
-  }
-
-  function centerEl(el){ const r=stage.getBoundingClientRect(); setElPos(el, r.width/2, r.height/2); }
-  function setElPos(el,x,y){ x=clamp(x,48,stage.clientWidth-48); y=clamp(y,48,stage.clientHeight-48); el.style.left=x+'px'; el.style.top=y+'px'; }
-  function moveElSmooth(el, intervalHint=interval, jitter=0){
-    const start={x:parseFloat(el.style.left||"0"), y:parseFloat(el.style.top||"0")};
-    let tx=rand(48,stage.clientWidth-48)+jitter, ty=rand(48,stage.clientHeight-48)+jitter;
-    tx=clamp(tx,48,stage.clientWidth-48); ty=clamp(ty,48,stage.clientHeight-48);
-    const duration=Math.max(240, Math.min(900, intervalHint*0.6));
-    const t0=performance.now();
-    function step(){
-      const t=performance.now(); const p=Math.min(1,(t-t0)/duration);
-      const e=p<0.5?2*p*p:-1+(4-2*p)*p;
-      setElPos(el, start.x+(tx-start.x)*e, start.y+(ty-start.y)*e);
-      if(p<1){ const id=requestAnimationFrame(step); rafMap.set(el,id); }
+    // Proiectăm o dată pozițiile ecran pentru linie constelație
+    const screenPts = [];
+    for(const s of stars){
+      const p = project(s);
+      screenPts.push(p);
     }
-    const id=requestAnimationFrame(step); rafMap.set(el,id);
+
+    // Conexiuni constelație: near mouse + între vecini apropiați
+    if(constellations){
+      const maxDist = 120;
+      ctx.lineWidth = 0.7;
+      ctx.strokeStyle = 'rgba(173,216,255,0.25)';
+      ctx.beginPath();
+      for(let i=0;i<screenPts.length;i++){
+        const a = screenPts[i];
+        // prioritar conectăm stelele apropiate de mouse
+        const dMouse = Math.hypot(a.x - mouse.x, a.y - mouse.y);
+        if(dMouse < 180){
+          for(let j=i+1;j<i+10 && j<screenPts.length;j++){
+            const b = screenPts[j];
+            const d = Math.hypot(a.x-b.x, a.y-b.y);
+            if(d < maxDist){
+              ctx.moveTo(a.x, a.y);
+              ctx.lineTo(b.x, b.y);
+            }
+          }
+        }
+      }
+      ctx.stroke();
+    }
+
+    // Desenăm stelele + trails
+    for(let i=0;i<stars.length;i++){
+      const s = stars[i];
+      const p = screenPts[i];
+
+      // Twinkle
+      const tw = 0.7 + 0.3*Math.sin((performance.now()*0.005) + s.tw);
+
+      // Trail (linie din poziția precedentă pe ecran)
+      if(s.px && s.py){
+        ctx.strokeStyle = `hsla(${s.hue},100%,70%,${0.25*warp})`;
+        ctx.lineWidth = Math.max(0.5, p.s*0.35);
+        ctx.beginPath();
+        ctx.moveTo(s.px, s.py);
+        ctx.lineTo(p.x, p.y);
+        ctx.stroke();
+      }
+      s.px = p.x; s.py = p.y;
+
+      // Punctul
+      const r = Math.max(0.6, p.s*tw);
+      ctx.fillStyle = `hsla(${s.hue},100%,${60 + (1-p.s)*20}%,${0.9})`;
+      ctx.beginPath();
+      ctx.arc(p.x, p.y, r, 0, Math.PI*2);
+      ctx.fill();
+    }
+
+    // indicator mic warp în colț
+    ctx.globalCompositeOperation = 'source-over';
+    ctx.fillStyle = 'rgba(255,255,255,0.8)';
+    ctx.font = 'bold 12px Courier New, monospace';
+    ctx.fillText(`Warp: ${warp.toFixed(1)}x  |  Stele: ${starCount}`, 12, H-12);
   }
 
-  cat.addEventListener('click',(e)=>{
-    score++; incMeter(3);
-    if(interval>260) interval=Math.max(260, interval-60);
-    speed=1400/interval;
-    if(score>=target){
-      level++; target+=8+Math.floor(level*1.2); size=Math.max(64,size-6);
-      cat.style.setProperty('--size', size+'px'); timeLeft+=4;
-      popup(`NIVEL ${level} 🔥`, innerWidth/2, 80); incMeter(6);
-    }
-    if(!dogActive){
-      dogActive=true; dog.style.display='block'; centerEl(dog);
-      moveElSmooth(dog, interval*1.1, rand(-40,40));
-      showToast("A apărut 🐶 Câinele Șiret! Ai grijă, scade puncte și timp.");
-    }
-    const rect=cat.getBoundingClientRect();
-    burst(rect.left+rect.width/2, rect.top+rect.height/2, pick(palette));
-    cat.classList.add('flash'); setTimeout(()=>cat.classList.remove('flash'),180);
-    moveElSmooth(cat, interval); scheduleMove(); updateHUD(); e.stopPropagation();
-  });
-
-  dog.addEventListener('click',(e)=>{
-    const rect=dog.getBoundingClientRect(); const cx=rect.left+rect.width/2, cy=rect.top+rect.height/2;
-    score=Math.max(0, score-2); timeLeft=Math.max(0, timeLeft-2);
-    popup('-2', cx, cy-20); burst(cx,cy,'#ff3355'); dog.classList.add('flash'); setTimeout(()=>dog.classList.remove('flash'),180);
-    moveElSmooth(dog, interval*0.9, rand(-40,40)); updateHUD(); e.stopPropagation();
-    showToast("🐶 Câinele zice: „Ham-ham, atenție, Ioane!”");
-  });
-
-  function startTimer(){
-    let last=performance.now();
-    function tick(){
-      const now=performance.now(); const dt=(now-last)/1000; last=now;
-      timeLeft-=dt;
-      if(timeLeft<=0){ popup('GAME OVER 💥', innerWidth/2, 100); showToast("Gata runda! Ion cere bis. 😄"); exitGame(); return; }
-      updateHUD(); tickRAF=requestAnimationFrame(tick);
-    }
-    tickRAF=requestAnimationFrame(tick);
+  let last = performance.now();
+  function loop(){
+    const now = performance.now();
+    const dt = Math.min(0.05, (now - last)/1000);
+    last = now;
+    update(dt);
+    draw(dt);
+    requestAnimationFrame(loop);
   }
 
-  stage.addEventListener('click',(e)=>{
-    const r=stage.getBoundingClientRect(); setElPos(cat, e.clientX-r.left, e.clientY-r.top);
-  });
+  init();
+  loop();
+})();
 
-  /* Click global pentru scântei & vibe */
-  addEventListener('click',(e)=>{
-    if(e.target===document.body || e.target===title || e.target.classList.contains('panel')){
-      burst(e.clientX,e.clientY, pick(palette)); incMeter(1);
-    }
-  });
+/* ============================================================
+   Titlu care ricoșează + modale + joc (minim, neschimbat)
+   ============================================================ */
+const title = document.getElementById('title');
+let tx=120, ty=120, dx=2.0, dy=1.6;
+(function animateTitle(){
+  const rect=title.getBoundingClientRect(); const w=innerWidth, h=innerHeight; let hit=false;
+  if(tx+rect.width>=w || tx<=10){ dx*=-1; hit=true; ripple(tx+rect.width/2, ty+rect.height/2); }
+  if(ty+rect.height>=h || ty<=10){ dy*=-1; hit=true; ripple(tx+rect.width/2, ty+rect.height/2); }
+  tx+=dx; ty+=dy; title.style.left=tx+"px"; title.style.top=ty+"px";
+  requestAnimationFrame(animateTitle);
+  if(hit) shuffleTheme();
+})();
 
-  /* ===== Ion – glume & complimente ===== */
-  function spuneGluma(){ showToast("😂 Glumă: " + pick(glume)); incMeter(6); }
-  function spuneCompliment(){ showToast("💖 Compliment: " + pick(complimente)); incMeter(8); }
-  function miniEaster(){ showToast("🆘 Panică rezolvată: dăm vina pe… bug-ul imaginar! 🐞"); incMeter(4); burst(innerWidth/2, innerHeight/2, '#ffd166'); }
+function ripple(x,y){
+  const r=document.createElement('div');
+  r.className='ripple'; r.style.left=x+'px'; r.style.top=y+'px';
+  document.body.appendChild(r); setTimeout(()=>r.remove(),650);
+}
+
+function shuffleTheme(){
+  const root=document.documentElement;
+  const cols = [getVar('--c1'),getVar('--c2'),getVar('--c3'),getVar('--c4')];
+  cols.push(cols.shift());
+  root.style.setProperty('--c1', cols[0]);
+  root.style.setProperty('--c2', cols[1]);
+  root.style.setProperty('--c3', cols[2]);
+  root.style.setProperty('--c4', cols[3]);
+}
+function getVar(name){ return getComputedStyle(document.documentElement).getPropertyValue(name).trim(); }
+
+title.onclick = ()=> openModal('modal1');
+
+/* ===== Modale ===== */
+function openModal(id){ document.getElementById(id).style.display='flex'; }
+function closeModal(id){ document.getElementById(id).style.display='none'; }
+addEventListener('click', e=>{ if(e.target.classList.contains('modal')) closeModal(e.target.id); });
+
+/* ===== Joc rapid (aceeași logică prinde pisica + câine) ===== */
+const gameEl=document.getElementById('game');
+const stage=document.getElementById('stage');
+const cat=document.getElementById('gameCat');
+const dog=document.getElementById('gameDog');
+const hud=document.getElementById('hud');
+const scoreEl=document.getElementById('score');
+const speedEl=document.getElementById('speedLabel');
+const levelEl=document.getElementById('levelLabel');
+const timeEl=document.getElementById('timeLabel');
+
+let score=0, level=1, target=10;
+let timeLeft=30, size=96;
+let baseInterval=1400, interval=baseInterval, speed=1;
+let moveTimer=null, tickRAF=null;
+const rafMap=new WeakMap();
+let dogActive=false;
+
+function openGame(){ closeModal('modal1'); closeModal('controls'); gameEl.style.display='flex'; hud.style.display='block'; resetGame(); }
+function exitGame(){
+  gameEl.style.display='none'; hud.style.display='none';
+  clearTimeout(moveTimer); cancelAnimationFrame(tickRAF);
+  const idC=rafMap.get(cat); if(idC) cancelAnimationFrame(idC);
+  const idD=rafMap.get(dog); if(idD) cancelAnimationFrame(idD);
+}
+function resetGame(){
+  score=0; level=1; target=10; timeLeft=30; size=96; baseInterval=1400; interval=baseInterval; speed=1;
+  dogActive=false; dog.style.display='none';
+  cat.style.setProperty('--size', size+'px');
+  centerEl(cat); centerEl(dog);
+  updateHUD(); clearTimeout(moveTimer); cancelAnimationFrame(tickRAF);
+  scheduleMove(); startTimer();
+}
+function updateHUD(){ scoreEl.textContent=score; speedEl.textContent=(1400/interval).toFixed(1)+'x'; levelEl.textContent=level; timeEl.textContent=timeLeft.toFixed(1)+'s'; }
+
+function scheduleMove(){
+  clearTimeout(moveTimer);
+  moveTimer=setTimeout(()=>{
+    moveElSmooth(cat, interval);
+    if(dogActive && Math.random()<0.8) moveElSmooth(dog, interval*rand(0.85,1.35), rand(-60,60));
+    scheduleMove();
+  }, interval);
+}
+function rand(a,b){ return Math.random()*(b-a)+a; }
+function clamp(v,a,b){ return Math.max(a,Math.min(b,v)); }
+
+function centerEl(el){ const r=stage.getBoundingClientRect(); setElPos(el, r.width/2, r.height/2); }
+function setElPos(el,x,y){ x=clamp(x,48,stage.clientWidth-48); y=clamp(y,48,stage.clientHeight-48); el.style.left=x+'px'; el.style.top=y+'px'; }
+function moveElSmooth(el, intervalHint=interval, jitter=0){
+  const start={x:parseFloat(el.style.left||"0"), y:parseFloat(el.style.top||"0")};
+  let tx=rand(48,stage.clientWidth-48)+jitter, ty=rand(48,stage.clientHeight-48)+jitter;
+  tx=clamp(tx,48,stage.clientWidth-48); ty=clamp(ty,48,stage.clientHeight-48);
+  const duration=Math.max(240, Math.min(900, intervalHint*0.6));
+  const t0=performance.now();
+  function step(){
+    const t=performance.now(); const p=Math.min(1,(t-t0)/duration);
+    const e=p<0.5?2*p*p:-1+(4-2*p)*p;
+    setElPos(el, start.x+(tx-start.x)*e, start.y+(ty-start.y)*e);
+    if(p<1){ const id=requestAnimationFrame(step); rafMap.set(el,id); }
+  }
+  const id=requestAnimationFrame(step); rafMap.set(el,id);
+}
+
+cat.addEventListener('click',(e)=>{
+  score++;
+  if(interval>260) interval=Math.max(260, interval-60);
+  if(score>=target){
+    level++; target+=8+Math.floor(level*1.2); size=Math.max(64,size-6);
+    cat.style.setProperty('--size', size+'px'); timeLeft+=4;
+    popup(`NIVEL ${level} 🔥`, innerWidth/2, 80);
+  }
+  if(!dogActive){
+    dogActive=true; dog.style.display='block'; centerEl(dog);
+    moveElSmooth(dog, interval*1.1, rand(-40,40));
+  }
+  const r=cat.getBoundingClientRect();
+  burst(r.left+r.width/2, r.top+r.height/2);
+  cat.classList.add('flash'); setTimeout(()=>cat.classList.remove('flash'),180);
+  moveElSmooth(cat, interval); scheduleMove(); updateHUD(); e.stopPropagation();
+});
+
+dog.addEventListener('click',(e)=>{
+  const r=dog.getBoundingClientRect(), cx=r.left+r.width/2, cy=r.top+r.height/2;
+  score=Math.max(0, score-2); timeLeft=Math.max(0, timeLeft-2);
+  popup('-2', cx, cy-20); burst(cx,cy,'#ff3355'); dog.classList.add('flash'); setTimeout(()=>dog.classList.remove('flash'),180);
+  moveElSmooth(dog, interval*0.9, rand(-40,40)); updateHUD(); e.stopPropagation();
+});
+
+function startTimer(){
+  let last=performance.now();
+  function tick(){
+    const now=performance.now(); const dt=(now-last)/1000; last=now;
+    timeLeft-=dt;
+    if(timeLeft<=0){ popup('GAME OVER 💥', innerWidth/2, 100); exitGame(); return; }
+    updateHUD(); tickRAF=requestAnimationFrame(tick);
+  }
+  tickRAF=requestAnimationFrame(tick);
+}
+
+stage.addEventListener('click',(e)=>{
+  const r=stage.getBoundingClientRect(); setElPos(cat, e.clientX-r.left, e.clientY-r.top);
+});
+
+/* ===== Efecte generice ===== */
+function burst(x,y,color='#ffffff'){
+  const ctx = document.getElementById('universe').getContext('2d');
+  ctx.save();
+  ctx.globalCompositeOperation='lighter';
+  for(let i=0;i<16;i++){
+    const ang = Math.random()*Math.PI*2, dist = Math.random()*40+20;
+    ctx.strokeStyle = color==='#{random}' ? `hsla(${Math.random()*360},100%,70%,.8)` : color;
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.lineTo(x + Math.cos(ang)*dist, y + Math.sin(ang)*dist);
+    ctx.stroke();
+  }
+  ctx.restore();
+}
+function popup(text,x,y){
+  const el=document.createElement('div');
+  el.textContent=text; el.style.position='fixed'; el.style.left=(x-6)+'px'; el.style.top=(y-12)+'px';
+  el.style.fontWeight='900'; el.style.textShadow='0 0 8px rgba(255,255,255,.6)'; el.style.zIndex=8; el.style.pointerEvents='none';
+  el.animate([{transform:'translateY(0)',opacity:1},{transform:'translateY(-40px)',opacity:0}],{duration:650,easing:'ease-out'});
+  document.body.appendChild(el); setTimeout(()=>el.remove(),660);
+}
+
+/* ===== Helper pentru stele (burst pe click pe canvas) ===== */
+document.getElementById('universe').addEventListener('click', (e)=> burst(e.clientX, e.clientY, '#a0d8ff'));
 
 </script>
 </body>
